@@ -21,33 +21,36 @@
     </div>
   </div>
 </body>
-<style>
-  .error {
-    background-color: #DF6C6C;
-  }
-</style>
+
 <script>
   const buttonElement = document.getElementById('add-button'); // +
   //const listElement = document.getElementById('list');
   const nameInputElement = document.getElementById('name-input'); // +
   const textInputElement = document.getElementById('text-input'); // +
   const newBox = document.getElementById('box'); // +
+  const quoteNameElement = document.getElementById("quote__name")
   const icomments = [ // данные о комментариях хранятся тут
     {
       name: "Глеб Фокин",
       date: "12.02.22 12:18",
       like: 3,
       comment: "Это будет первый комментарий на этой странице",
-      paint: "",
+      //  paint: "",
+      txtRedact: true,
       userLike: false,
+      quoteName: "",
+      quoteComment: "",
     },
     {
       name: "Варвара Н",
       date: "13.02.22 19:22",
       like: 75,
       comment: "Мне нравится как оформлена эта страница!",
-      paint: "-active-like",
-      userLike: true
+      //  paint: "-active-like",
+      txtRedact: true,
+      userLike: true,
+      quoteName: "",
+      quoteComment: "",
     },
   ];
 
@@ -55,18 +58,19 @@
     const icommentsHTML = icomments.map((icomment, index) => {
       return ` <li class="comment">
         <div class="comment-header">
-          <div>${icomment.name}</div>
+          <div id="quote__name">${icomment.name}</div>
           <div>${icomment.date}</div>
         </div>
         <div class="comment-body">
-          <div class="comment-text">
+          <div data-comments="${index}" class="comment-text">
            ${icomment.comment}
           </div>
         </div>
         <div class="comment-footer">
+          <button data-redact="${index}" class="redact">Редактировать</button>
           <div class="likes">
             <span class="likes-counter">${icomment.like}</span>
-            <button data-index="${index}" class="like-button ${icomment.paint}"></button>
+            <button data-index="${index}" class="${icomment.userLike ? 'like-button -active-like' : 'like-button'}"></button>
           </div>
         </div>
       </li>`;
@@ -75,6 +79,28 @@
     // console.log(icommentsHTML); // Тут видно данные с массива
     newBox.innerHTML = icommentsHTML; // Рендерим данные с массива
     // };
+
+
+
+// НЕ ВЫХОДИТ РЕАЛИЗОВАТЬ ТУТ
+    const answerComments = document.querySelectorAll(".comment-text");
+
+for (const answerComment of answerComments) {
+  answerComment.addEventListener("click", () => {
+    //console.log({event});
+   // event.stopPropagation();
+    const i = answerComment.dataset.comments;
+    
+
+    // Тут путанница возникла
+if (!icomments[i].txtRedact) return;
+  quoteNameElement.innerHTML = icomments[index].name;
+  quoteBodyElement.innerHTML = icomments[index].comment;
+  //  itext = icomments.splice(icomments, 1); 
+    renderIcomments();
+  });
+}
+
 
     const likeButtonElements = document.querySelectorAll(".like-button");
 
@@ -93,11 +119,45 @@
           icomments[index].userLike = false;
         }
         renderIcomments()
-      }); 
+      });
     }
   };
 
   renderIcomments();
+
+  const buttonRedacts = document.querySelectorAll(".redact");
+// for ( берем Элемент из итерируемого объекта) {тело цикла}
+  for (const buttonRedact of buttonRedacts) {
+    buttonRedact.addEventListener("click", () => {
+// с пом-ю св-ва dataset получаем доступ к data-атрибуту redact (который указали в рендер-html форме, в кнопке редактирования) 
+      const index = buttonRedact.dataset.redact;
+      
+      if (buttonRedacts[index].innerHTML === "Редактировать") {
+        buttonRedacts[index].innerHTML = "Сохранить";
+        icomments[index].txtRedact = false;
+        const commentBodyElements = document.querySelectorAll(".comment-text");
+        const commentBodyElement = commentBodyElements[index];
+        const textareaElement = `<textarea type="textarea" class="redactor-txt" rows="4">${icomments[index].comment}</textarea>`;
+        commentBodyElement.innerHTML = textareaElement;
+      } else {
+        icomments[index].txtRedact = true;
+        const redactCommentElement = document.querySelectorAll(".redactor-txt");
+        icomments[index].comment = protectHtmlString(redactCommentElement[0].value);
+        renderIcomments();
+      }
+    });
+  }
+
+  function protectHtmlString(someEdit) {
+    someEdit = someEdit
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+    return someEdit;
+  }
+
+// ВОПРОС - КАК ПРИМЕНИТЬ РЕДАКТИРОВАНИЕ комментов к новым комментариям которые добавляю? Что нужно изменить в коде
 
   const giveMeTime = 'ru-RU';
   let todayData = { day: 'numeric', month: 'numeric', year: '2-digit' };
@@ -113,24 +173,48 @@
     if (nameInputElement.value === "" || textInputElement.value === "") { // если значения полей имени или текста будут пустыми, применится класс error.(красный цвет полей)
       nameInputElement.classList.add("error"); textInputElement.classList.add("error");
       return;
-    }
+    } 
     const oldListHtml = newBox.innerHTML; // читаем из newBox все содержимое // Для того чтобы посмотреть или изменить содержимое эл-та исп-ся св-во innerHTML (например console.log(element.innerHTML))
-
-
+    
     //   newBox.innerHTML = oldListHtml + // тут мы обновляем содержимое эл-та  // Далее приклеиваем к содержимому эл-та в данном случае html код.
 
     icomments.push({
-      name: `${nameInputElement.value}`,
-      comment: `${textInputElement.value}`,
+      name: `${nameInputElement.value       // но лучше:  name: protectHtmlString(nameInputElement.value),
+        .replaceAll("<", "&lt")
+        .replaceAll(">", "&gt")
+        .replaceAll('"', "&quot")
+       }`,    
+
+      comment: `${textInputElement.value    //   comment: protectHtmlString(textInputElement.value),
+        .replaceAll("<", "&lt")
+        .replaceAll(">", "&gt")
+        .replaceAll('"', "&quot")
+      }`,
       date: `${date.toLocaleString(giveMeTime, todayTime)} ${date.toLocaleString(giveMeTime, todayTime)}`,
       like: 0,
       paint: '',
-      userLike: false
+      txtRedact: true,
+      userLike: false,
+      quoteName: quoteNameElement.innerHTML,
+      quoteComment: quoteBodyElement.innerHTML
     });
+
+    // можно и лучше сделать так:   Используем ф-ию которую создали ранее, чтобы не плодить много кода
+    // icomments.push({
+    //   name: protectHtmlString(nameInputElement.value),
+    //   comment: protectHtmlString(textInputElement.value),
+    //   date: `${date.toLocaleString(giveMeTime, todayTime)} ${date.toLocaleString(giveMeTime, todayTime)}`,
+    //   like: 0,
+    //   paint: '',
+    //   txtRedact: true,
+    //   userLike: false,
+    // });
 
     renderIcomments();
 
   });
+
+
 </script>
 
 </html>

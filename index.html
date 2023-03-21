@@ -90,13 +90,13 @@ for (const answerComment of answerComments) {
   answerComment.addEventListener("click", (event) => {
     //console.log({event});
     event.stopPropagation();
-    const index = answerComment.dataset.comments;
+    const zindex = answerComment.dataset.comments;
     
 
     // Тут путанница возникла
-if (!icomments[index].txtRedact) return;
-    const answerName = icomments[index].name;
-    const ansComment = icomments[index].comment;
+if (!icomments[zindex].txtRedact) return;
+    const answerName = icomments[zindex].name;
+    const ansComment = icomments[zindex].comment;
 
     textInputElement.value = `>` + " " + answerName + ansComment ;
     
@@ -205,8 +205,8 @@ if (!icomments[index].txtRedact) return;
       paint: '',
       txtRedact: true,
       userLike: false,
-      quoteName: quoteNameElement.innerHTML,
-      quoteComment: quoteBodyElement.innerHTML
+      // quoteName: quoteNameElement.innerHTML,
+      // quoteComment: quoteBodyElement.innerHTML
     });
 
     // можно и лучше сделать так:   Используем ф-ию которую создали ранее, чтобы не плодить много кода

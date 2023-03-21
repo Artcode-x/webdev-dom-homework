@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <meta charset="utf-8" />
   <title>Проект "Комменты"</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -86,20 +87,29 @@
     const answerComments = document.querySelectorAll(".comment-text");
 
 for (const answerComment of answerComments) {
-  answerComment.addEventListener("click", () => {
+  answerComment.addEventListener("click", (event) => {
     //console.log({event});
-   // event.stopPropagation();
-    const i = answerComment.dataset.comments;
+    event.stopPropagation();
+    const index = answerComment.dataset.comments;
     
 
     // Тут путанница возникла
-if (!icomments[i].txtRedact) return;
-  quoteNameElement.innerHTML = icomments[index].name;
-  quoteBodyElement.innerHTML = icomments[index].comment;
-  //  itext = icomments.splice(icomments, 1); 
+if (!icomments[index].txtRedact) return;
+    const answerName = icomments[index].name;
+    const ansComment = icomments[index].comment;
+
+    textInputElement.value = `>` + " " + answerName + ansComment ;
+    
     renderIcomments();
-  });
+  }); 
 }
+
+  // quoteNameElement.innerHTML = icomments[index].name;
+  // quoteBodyElement.innerHTML = icomments[index].comment;
+  // //  itext = icomments.splice(icomments, 1); 
+   
+//   });
+// }
 
 
     const likeButtonElements = document.querySelectorAll(".like-button");

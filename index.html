@@ -81,7 +81,28 @@
     newBox.innerHTML = icommentsHTML; // Рендерим данные с массива
     // };
 
-
+    const buttonRedacts = document.querySelectorAll(".redact");
+// for ( берем Элемент из итерируемого объекта) {тело цикла}
+  for (const buttonRedact of buttonRedacts) {
+    buttonRedact.addEventListener("click", () => {
+// с пом-ю св-ва dataset получаем доступ к data-атрибуту redact (который указали в рендер-html форме, в кнопке редактирования) 
+      const index = buttonRedact.dataset.redact;
+      
+      if (buttonRedacts[index].innerHTML === "Редактировать") {
+        buttonRedacts[index].innerHTML = "Сохранить";
+        icomments[index].txtRedact = false;
+        const commentBodyElements = document.querySelectorAll(".comment-text");
+        const commentBodyElement = commentBodyElements[index];
+        const textareaElement = `<textarea type="textarea" class="redactor-txt" rows="4">${icomments[index].comment}</textarea>`;
+        commentBodyElement.innerHTML = textareaElement;
+      } else {
+        icomments[index].txtRedact = true;
+        const redactCommentElement = document.querySelectorAll(".redactor-txt");
+        icomments[index].comment = protectHtmlString(redactCommentElement[0].value);
+        renderIcomments();
+      }
+    });
+  }
 
 // НЕ ВЫХОДИТ РЕАЛИЗОВАТЬ ТУТ
     const answerComments = document.querySelectorAll(".comment-text");
@@ -135,28 +156,7 @@ if (!icomments[zindex].txtRedact) return;
 
   renderIcomments();
 
-  const buttonRedacts = document.querySelectorAll(".redact");
-// for ( берем Элемент из итерируемого объекта) {тело цикла}
-  for (const buttonRedact of buttonRedacts) {
-    buttonRedact.addEventListener("click", () => {
-// с пом-ю св-ва dataset получаем доступ к data-атрибуту redact (который указали в рендер-html форме, в кнопке редактирования) 
-      const index = buttonRedact.dataset.redact;
-      
-      if (buttonRedacts[index].innerHTML === "Редактировать") {
-        buttonRedacts[index].innerHTML = "Сохранить";
-        icomments[index].txtRedact = false;
-        const commentBodyElements = document.querySelectorAll(".comment-text");
-        const commentBodyElement = commentBodyElements[index];
-        const textareaElement = `<textarea type="textarea" class="redactor-txt" rows="4">${icomments[index].comment}</textarea>`;
-        commentBodyElement.innerHTML = textareaElement;
-      } else {
-        icomments[index].txtRedact = true;
-        const redactCommentElement = document.querySelectorAll(".redactor-txt");
-        icomments[index].comment = protectHtmlString(redactCommentElement[0].value);
-        renderIcomments();
-      }
-    });
-  }
+ 
 
   function protectHtmlString(someEdit) {
     someEdit = someEdit
@@ -166,7 +166,7 @@ if (!icomments[zindex].txtRedact) return;
       .replaceAll('"', "&quot;");
     return someEdit;
   }
-
+  
 // ВОПРОС - КАК ПРИМЕНИТЬ РЕДАКТИРОВАНИЕ комментов к новым комментариям которые добавляю? Что нужно изменить в коде
 
   const giveMeTime = 'ru-RU';

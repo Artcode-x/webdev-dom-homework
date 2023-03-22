@@ -81,56 +81,35 @@
     newBox.innerHTML = icommentsHTML; // Рендерим данные с массива
     // };
 
-    const buttonRedacts = document.querySelectorAll(".redact");
-// for ( берем Элемент из итерируемого объекта) {тело цикла}
-  for (const buttonRedact of buttonRedacts) {
-    buttonRedact.addEventListener("click", () => {
-// с пом-ю св-ва dataset получаем доступ к data-атрибуту redact (который указали в рендер-html форме, в кнопке редактирования) 
-      const index = buttonRedact.dataset.redact;
-      
-      if (buttonRedacts[index].innerHTML === "Редактировать") {
-        buttonRedacts[index].innerHTML = "Сохранить";
-        icomments[index].txtRedact = false;
-        const commentBodyElements = document.querySelectorAll(".comment-text");
-        const commentBodyElement = commentBodyElements[index];
-        const textareaElement = `<textarea type="textarea" class="redactor-txt" rows="4">${icomments[index].comment}</textarea>`;
-        commentBodyElement.innerHTML = textareaElement;
-      } else {
-        icomments[index].txtRedact = true;
-        const redactCommentElement = document.querySelectorAll(".redactor-txt");
-        icomments[index].comment = protectHtmlString(redactCommentElement[0].value);
-        renderIcomments();
-      }
-    });
-  }
+    buttonEditText();
 
-// НЕ ВЫХОДИТ РЕАЛИЗОВАТЬ ТУТ
+    // Тут были сложности
     const answerComments = document.querySelectorAll(".comment-text");
 
-for (const answerComment of answerComments) {
-  answerComment.addEventListener("click", (event) => {
-    //console.log({event});
-    event.stopPropagation();
-    const zindex = answerComment.dataset.comments;
-    
+    for (const answerComment of answerComments) {
+      answerComment.addEventListener("click", (event) => {
+        //console.log({event});
+        event.stopPropagation();
+        const zindex = answerComment.dataset.comments;
 
-    // Тут путанница возникла
-if (!icomments[zindex].txtRedact) return;
-    const answerName = icomments[zindex].name;
-    const ansComment = icomments[zindex].comment;
 
-    textInputElement.value = `>` + " " + answerName + ansComment ;
-    
-    renderIcomments();
-  }); 
-}
+        //  возникла путанница
+        if (!icomments[zindex].txtRedact) return;
+        const answerName = icomments[zindex].name;
+        const ansComment = icomments[zindex].comment;
 
-  // quoteNameElement.innerHTML = icomments[index].name;
-  // quoteBodyElement.innerHTML = icomments[index].comment;
-  // //  itext = icomments.splice(icomments, 1); 
-   
-//   });
-// }
+        textInputElement.value = `>` + " " + answerName + ansComment;
+
+        renderIcomments();
+      });
+    }
+
+    // quoteNameElement.innerHTML = icomments[index].name;
+    // quoteBodyElement.innerHTML = icomments[index].comment;
+    // //  itext = icomments.splice(icomments, 1); 
+
+    //   });
+    // }
 
 
     const likeButtonElements = document.querySelectorAll(".like-button");
@@ -156,7 +135,33 @@ if (!icomments[zindex].txtRedact) return;
 
   renderIcomments();
 
- 
+
+  function buttonEditText(buttonRedacts) { // обернул в ф-ию чтобы было удобно вызывать где нужно
+
+    buttonRedacts = document.querySelectorAll(".redact");
+    // for ( берем Элемент из итерируемого объекта) {тело цикла}
+    for (const buttonRedact of buttonRedacts) {
+      buttonRedact.addEventListener("click", () => {
+        // с пом-ю св-ва dataset получаем доступ к data-атрибуту redact (который указали в рендер-html форме, в кнопке редактирования) 
+        const index = buttonRedact.dataset.redact;
+
+        if (buttonRedacts[index].innerHTML === "Редактировать") {
+          buttonRedacts[index].innerHTML = "Сохранить";
+          icomments[index].txtRedact = false;
+          const commentBodyElements = document.querySelectorAll(".comment-text");
+          const commentBodyElement = commentBodyElements[index];
+          const textareaElement = `<textarea type="textarea" class="redactor-txt" rows="4">${icomments[index].comment}</textarea>`;
+          commentBodyElement.innerHTML = textareaElement;
+        } else {
+          icomments[index].txtRedact = true;
+          const redactCommentElement = document.querySelectorAll(".redactor-txt");
+          icomments[index].comment = protectHtmlString(redactCommentElement[0].value);
+          renderIcomments();
+        }
+      });
+    }
+    return buttonEditText;
+  }
 
   function protectHtmlString(someEdit) {
     someEdit = someEdit
@@ -166,8 +171,8 @@ if (!icomments[zindex].txtRedact) return;
       .replaceAll('"', "&quot;");
     return someEdit;
   }
-  
-// ВОПРОС - КАК ПРИМЕНИТЬ РЕДАКТИРОВАНИЕ комментов к новым комментариям которые добавляю? Что нужно изменить в коде
+
+  // ВОПРОС - КАК ПРИМЕНИТЬ РЕДАКТИРОВАНИЕ комментов к новым комментариям которые добавляю? Что нужно изменить в коде
 
   const giveMeTime = 'ru-RU';
   let todayData = { day: 'numeric', month: 'numeric', year: '2-digit' };
@@ -183,9 +188,9 @@ if (!icomments[zindex].txtRedact) return;
     if (nameInputElement.value === "" || textInputElement.value === "") { // если значения полей имени или текста будут пустыми, применится класс error.(красный цвет полей)
       nameInputElement.classList.add("error"); textInputElement.classList.add("error");
       return;
-    } 
+    }
     const oldListHtml = newBox.innerHTML; // читаем из newBox все содержимое // Для того чтобы посмотреть или изменить содержимое эл-та исп-ся св-во innerHTML (например console.log(element.innerHTML))
-    
+
     //   newBox.innerHTML = oldListHtml + // тут мы обновляем содержимое эл-та  // Далее приклеиваем к содержимому эл-та в данном случае html код.
 
     icomments.push({
@@ -193,14 +198,14 @@ if (!icomments[zindex].txtRedact) return;
         .replaceAll("<", "&lt")
         .replaceAll(">", "&gt")
         .replaceAll('"', "&quot")
-       }`,    
+        }`,
 
       comment: `${textInputElement.value    //   comment: protectHtmlString(textInputElement.value),
         .replaceAll("<", "&lt")
         .replaceAll(">", "&gt")
         .replaceAll('"', "&quot")
-      }`,
-      date: `${date.toLocaleString(giveMeTime, todayTime)} ${date.toLocaleString(giveMeTime, todayTime)}`,
+        }`,
+      date: `${date.toLocaleString(giveMeTime, todayData)} ${date.toLocaleString(giveMeTime, todayTime)}`,
       like: 0,
       paint: '',
       txtRedact: true,

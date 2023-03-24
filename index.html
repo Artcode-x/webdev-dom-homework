@@ -172,7 +172,7 @@
     return someEdit;
   }
 
-  // ВОПРОС - КАК ПРИМЕНИТЬ РЕДАКТИРОВАНИЕ комментов к новым комментариям которые добавляю? Что нужно изменить в коде
+
 
   const giveMeTime = 'ru-RU';
   let todayData = { day: 'numeric', month: 'numeric', year: '2-digit' };
@@ -194,17 +194,19 @@
     //   newBox.innerHTML = oldListHtml + // тут мы обновляем содержимое эл-та  // Далее приклеиваем к содержимому эл-та в данном случае html код.
 
     icomments.push({
-      name: `${nameInputElement.value       // но лучше:  name: protectHtmlString(nameInputElement.value),
-        .replaceAll("<", "&lt")
-        .replaceAll(">", "&gt")
-        .replaceAll('"', "&quot")
-        }`,
+      // это старый код name: `${nameInputElement.value       // но лучше:  name: protectHtmlString(nameInputElement.value),
+      //   .replaceAll("<", "&lt")
+      //   .replaceAll(">", "&gt")
+      //   .replaceAll('"', "&quot")
+      //   }`,
 
-      comment: `${textInputElement.value    //   comment: protectHtmlString(textInputElement.value),
-        .replaceAll("<", "&lt")
-        .replaceAll(">", "&gt")
-        .replaceAll('"', "&quot")
-        }`,
+      // это старый код comment: `${textInputElement.value    //   comment: protectHtmlString(textInputElement.value),
+      //   .replaceAll("<", "&lt")
+      //   .replaceAll(">", "&gt")
+      //   .replaceAll('"', "&quot")
+      //   }`,
+      name: protectHtmlString(nameInputElement.value),
+      comment: protectHtmlString(textInputElement.value),
       date: `${date.toLocaleString(giveMeTime, todayData)} ${date.toLocaleString(giveMeTime, todayTime)}`,
       like: 0,
       paint: '',

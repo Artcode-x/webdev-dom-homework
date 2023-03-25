@@ -2,6 +2,15 @@
     background-color: #DF6C6C;
 }
 
+.delete-button {
+    font-size: 24px;
+    padding: 10px 25px;
+    background: var(--button-color);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
 .redact {
     font-size: 24px;
     padding: 10px 15px;
@@ -18,13 +27,13 @@
     }
 }
 
-.redactor-txt{
+.redactor-txt {
     width: 500px;
     box-sizing: border-box;
     border-radius: 15px;
     font-size: 32px;
     font-family: Helvetica;
-    
+
 }
 
 

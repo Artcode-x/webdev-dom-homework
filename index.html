@@ -31,21 +31,25 @@
   const newBox = document.getElementById('box'); // +
   const quoteNameElement = document.getElementById("quote__name")
 
-  const fetchPromise = fetch(
+  function getAllc(getAllComments) {
+    
+  }
+  const getAllComments = () => fetch(
     'https://webdev-hw-api.vercel.app/api/v1/:alexandr-butylev/comments',
     {
       method: "GET",
     }
   )
-  console.log(fetchPromise);
+  
 
-  fetchPromise.then((response) => {
+  getAllComments().then((response) => { 
     const jsonPromise = response.json()
     jsonPromise.then((responseData) => {
       console.log(responseData);
 
       icomments = responseData.comments;
       renderIcomments();
+      return getAllc;
     });
   });
 
@@ -231,6 +235,8 @@
     }).then((response) => { // в ф-ии then, в обработчике, мы ответ преобразовали в json строку
       response.json().then((responseData) => { // и из преобразованной json строки достаем актуальный список задач 
         console.log(responseData);
+
+        getAllc();
 
         iNewComment = responseData.comments; // этот актуальный список задач положили в icomments
         renderIcomments(); // и перерендерели список

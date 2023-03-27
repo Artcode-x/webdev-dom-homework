@@ -31,25 +31,26 @@
   const newBox = document.getElementById('box'); // +
   const quoteNameElement = document.getElementById("quote__name")
 
-  function getAllc(getAllComments) {
-    
-  }
+  // function getAllcommentsFromServer(getAllComments) {
+ 
+  // }
   const getAllComments = () => fetch(
-    'https://webdev-hw-api.vercel.app/api/v1/:alexandr-butylev/comments',
+    'https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments',
     {
       method: "GET",
     }
   )
-  
 
-  getAllComments().then((response) => { 
+
+  getAllComments().then((response) => {
     const jsonPromise = response.json()
     jsonPromise.then((responseData) => {
       console.log(responseData);
 
       icomments = responseData.comments;
+     
       renderIcomments();
-      return getAllc;
+      //return getAllcommentsFromServer;
     });
   });
 
@@ -226,7 +227,8 @@
     // });
 
 
-    fetch('https://webdev-hw-api.vercel.app/api/v1/:alexandr-butylev/comments', {
+
+   fetch('https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments', {
       method: "POST",
       body: JSON.stringify({ // в body запроса мы передали json строку с обьектом, которую требует api
         name: protectHtmlString(nameInputElement.value),
@@ -236,13 +238,18 @@
       response.json().then((responseData) => { // и из преобразованной json строки достаем актуальный список задач 
         console.log(responseData);
 
-        getAllc();
+        getAllComments();
 
         iNewComment = responseData.comments; // этот актуальный список задач положили в icomments
+        
         renderIcomments(); // и перерендерели список
       });
     });
+  
+    
 
+  
+        
 
 
     // function delComments(deleteComs) {

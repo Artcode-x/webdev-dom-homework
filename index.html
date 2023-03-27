@@ -252,29 +252,29 @@
         
 
 
-    // function delComments(deleteComs) {
-    //   deleteComs = document.querySelectorAll(".delete-button");
-    // for (const deleteCom of deleteComs) {
-    //   deleteCom.addEventListener("click", () => {
+    
+      const deleteComments = document.querySelectorAll(".delete-button");
+     for (const deleteComment of deleteComments) {
+      deleteComment.addEventListener("click", (event) => {
+        event.stopPropagation();
+        
+         const id = deleteComment.dataset.id;
 
-    //     const id = deleteCom.dataset.id;
+         fetch('https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments/' + id, { // в конец адреса api приклеиваем id задачи
+           method: "DELETE",
 
-    //     fetch('https://webdev-hw-api.vercel.app/api/v1/:alexandr-butylev/comments/' + id, { // в конец адреса api приклеиваем id задачи
-    //       method: "DELETE",
+         }).then((response) => { // в ф-ии then, в обработчике, мы ответ преобразовали в json строку
+       response.json().then((responseData) => { // и из преобразованной json строки достаем актуальный список задач 
+         console.log(responseData);
 
-    //     }).then((response) => { // в ф-ии then, в обработчике, мы ответ преобразовали в json строку
-    //   response.json().then((responseData) => { // и из преобразованной json строки достаем актуальный список задач 
-    //     console.log(responseData);
-
-    //      icomments = responseData.comments; // этот актуальный список задач положили в icomments
-    //      renderIcomments(); // и перерендерели список
-    //   });
-    //   })
-    // });
-    // }
-    // return delComments;
-
-    //const id = '..';
+          icomments = responseData.comments; // этот актуальный список задач положили в icomments
+          renderIcomments(); // и перерендерели список
+          
+       });
+       })
+     });
+    }
+    
 
 
     // const fetchPromise = fetch(

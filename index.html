@@ -238,11 +238,17 @@
       response.json().then((responseData) => { // и из преобразованной json строки достаем актуальный список задач 
         console.log(responseData);
 
-        getAllComments();
+        getAllComments().then((response) => {
+          const jsonPromise = response.json()
+          jsonPromise.then((responseData) => {
+            console.log(responseData);
 
-        iNewComment = responseData.comments; // этот актуальный список задач положили в icomments
 
-        renderIcomments(); // и перерендерели список
+            icomments = responseData.comments; // этот актуальный список задач положили в icomments
+
+            renderIcomments(); // и перерендерели список
+          });
+        });
       });
     });
 

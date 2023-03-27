@@ -10,6 +10,12 @@
   border-radius: 15px;
   cursor: pointer;
 }
+.delete-button:hover {
+  margin-right: 10px;
+  opacity: 0.9;
+  border: 1px solid greenyellow;
+  border-radius: 15px;
+}
 
 .redact {
   font-size: 24px;

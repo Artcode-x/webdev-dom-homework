@@ -91,13 +91,13 @@
           <div>${icomment.date}</div>
         </div>
         <div class="comment-body">
-          <div data-comments="${icomments.text}" class="comment-text">
+          <div data-comments="${icomment.text}" class="comment-text">
            ${icomment.text}
           </div>
         </div>
         <div class="comment-footer">
           <button data-redact="${index}" class="redact">Редактировать</button>
-          <button data-id="${icomments.id}" class="delete-button">Удалить</button>
+          <button data-id="${icomment.id}" class="delete-button">Удалить</button>
           <div class="likes">
             <span class="likes-counter">${icomment.likes}</span>
             <button data-index="${index}" class="${icomment.isLiked ? 'like-button -active-like' : 'like-button'}"></button>
@@ -113,22 +113,32 @@
 
     buttonEditText();
 
-    // Тут были сложности
-    const answerComments = document.querySelectorAll(".comment-text");
+    
+    
+    
+    // Тут были сложности , Функция ответа на комментарии
+    const answerComments = document.querySelectorAll(".comment");
 
     for (const answerComment of answerComments) {
       answerComment.addEventListener("click", (event) => {
-        //console.log({event});
         event.stopPropagation();
-        const zindex = answerComment.dataset.comments;
+        // const commentTextElement = answerComment.querySelector('.comment-text');
+        // const commentText = commentTextElement.dataset.comments
+        // const authorTextElement = answerComment.querySelector('#quote__name');
+        // const author = authorTextElement.innerHTML
+        // console.log(commentText, author);
 
-
+       //const zindex = answerComment.dataset.comments;
+        
+      
+      
         //  возникла путанница
-        if (!icomments[zindex].txtRedact) return;
-        const answerName = icomments[zindex].author;
-        const ansComment = icomments[zindex].text;
+        // if (!icomments[zindex].txtRedact) return;
+        // const answerName = icomments[zindex].author;
+        // const ansComment = icomments[zindex].text;
 
-        textInputElement.value = `>` + " " + answerName + ansComment;
+      //  textInputElement.value = `>` + " " + answerName + ansComment;
+      textInputElement.value = `>` + " " + author + commentText;
 
         renderIcomments();
       });

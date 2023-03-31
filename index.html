@@ -1,69 +1,349 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Проект "Комменты"</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
 
-  <body>
-    <div class="container">
-      <ul class="comments">
-        <li class="comment">
-          <div class="comment-header">
-            <div>Глеб Фокин</div>
-            <div>12.02.22 12:18</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Это будет первый комментарий на этой странице
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">3</span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>
-        <li class="comment">
-          <div class="comment-header">
-            <div>Варвара Н.</div>
-            <div>13.02.22 19:22</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Мне нравится как оформлена эта страница! ❤
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">75</span>
-              <button class="like-button -active-like"></button>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="add-form">
-        <input
-          type="text"
-          class="add-form-name"
-          placeholder="Введите ваше имя"
-        />
-        <textarea
-          type="textarea"
-          class="add-form-text"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
-        <div class="add-form-row">
-          <button class="add-form-button">Написать</button>
-        </div>
+<head>
+  <meta charset="utf-8" />
+  <title>Проект "Комменты"</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+
+<body>
+  <div class="container">
+    <ul class="comments" id="box">
+      <!-- код отсюда теперь в массиве js-->
+    </ul>
+    <div class="add-form">
+      <input type="text" id="name-input" value="Alex D" class="add-form-name" placeholder="Введите ваше имя" />
+      <textarea type="textarea" id="text-input" value="test-text" class="add-form-text"
+        placeholder="Введите ваш коментарий" rows="4"></textarea>
+      <div class="add-form-row">
+        <button id="add-button" class="add-form-button">Написать</button>
       </div>
     </div>
-  </body>
+  </div>
+</body>
 
-  <script>
-    // Код писать здесь
-    console.log("It works!");
-  </script>
+<script>
+  const buttonElement = document.getElementById('add-button'); // +
+  //const listElement = document.getElementById('list');
+  const nameInputElement = document.getElementById('name-input'); // +
+  const textInputElement = document.getElementById('text-input'); // +
+  const newBox = document.getElementById('box'); // +
+  const quoteNameElement = document.getElementById("quote__name")
+
+  // function getAllcommentsFromServer(getAllComments) {
+
+  // }
+  const getAllComments = () => fetch(
+    'https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments',
+    {
+      method: "GET",
+    });
+
+
+  getAllComments().then((response) => {
+    return response.json();
+  })
+    .then((responseData) => {
+    //  console.log(responseData);
+      icomments = responseData.comments;
+      renderIcomments();
+    });
+  
+
+
+  // для ререндера icomments на получаемые данные с сервера поменяли const на let
+  let icomments = [ // данные о комментариях хранятся тут   
+    {
+      id: "",
+      author: "Глеб Фокин",
+      date: "12.02.22 12:18",
+      likes: 3,
+      text: "Это будет первый комментарий на этой странице",
+      //  paint: "",
+      txtRedact: true,
+      isLiked: false,
+      quoteName: "",
+      quoteComment: "",
+    },
+    {
+      id: "",
+      author: "Варвара Н",
+      date: "13.02.22 19:22",
+      likes: 75,
+      text: "Мне нравится как оформлена эта страница!",
+      //  paint: "-active-like",
+      txtRedact: true,
+      isLiked: true,
+      quoteName: "",
+      quoteComment: "",
+    },
+  ];
+
+  function answerOnComments() {  // Функция ответа на комментарии
+    const answerComments = document.querySelectorAll(".comment");
+  
+    for (const answerComment of answerComments) {
+      answerComment.addEventListener("click", (event) => {
+        event.stopPropagation();
+         const commentTextElement = answerComment.querySelector('.comment-text');
+         const commentText = commentTextElement.dataset.comments
+         const authorTextElement = answerComment.querySelector('#quote__name');
+          const author = authorTextElement.innerHTML
+          console.log(commentText, author);
+
+            textInputElement.value = `>` + " " + author + ` ` + commentText;
+            return answerOnComments();
+            renderIcomments();
+    });
+    };
+    };
+  
+    function likesButton() {
+        
+     
+    // comment.likes = comment.isLiked
+    //   ? comment.likes - 1
+    //   : comment.likes + 1;
+    // comment.isLiked = !comment.isLiked;
+    // comment.isLikeLoading = false;
+    // renderComments();
+  
+
+        const likeButtonElements = document.querySelectorAll(".like-button");
+    
+        
+        for (const likeButtonElement of likeButtonElements) {
+          // for (Элемент of итерируемый обьект) { тело цикла for of }       
+          likeButtonElement.addEventListener("click", () => {
+           const index = likeButtonElement.dataset.index;
+            // с помощью св-ва dataset можно получить доступ к data-атрибутам с пом-ю js (у эл-та dom дерева)
+    
+            delay(2000).then(() => {
+
+             if (icomments[index].isLiked === false) {
+               icomments[index].paint = "-active-like";
+               icomments[index].likes += 1;
+               icomments[index].isLiked = true;
+             } else {
+               icomments[index].paint = '';
+               icomments[index].likes -= 1;
+               icomments[index].isLiked = false;
+             }
+            renderIcomments()
+
+          }); // с функиции delay
+
+          });
+        }
+      };
+
+  const renderIcomments = () => { // тут будем рендерить комменты
+    const icommentsHTML = icomments.map((icomment, index) => {
+      return ` <li class="comment">
+        <div class="comment-header">
+          <div id="quote__name">${icomment.author.name}</div>
+          <div>${icomment.date}</div>
+        </div>
+        <div class="comment-body">
+          <div data-comments="${icomment.text}" class="comment-text">
+           ${icomment.text}
+          </div>
+        </div>
+        <div class="comment-footer">
+          <button data-redact="${index}" class="redact">Редактировать</button>
+          <button data-id="${icomment.id}" class="delete-button">Удалить</button>
+          <div class="likes">
+            <span class="likes-counter">${icomment.likes}</span>
+            <button data-index="${index}" class="${icomment.isLiked ? 'like-button -active-like' : 'like-button'}"></button> 
+            
+            </div>
+        </div>
+      </li>`;
+
+    }).join('');  // а после этого проверяем через консоль и кладем в innerHTML полученную строку
+    // console.log(icommentsHTML); // Тут видно данные с массива
+    newBox.innerHTML = icommentsHTML; // Рендерим данные с массива
+    // };
+
+    buttonEditText();
+    answerOnComments();
+    likesButton();
+}
+  // renderIcomments();
+
+
+  function buttonEditText(buttonRedacts) { // обернул в ф-ию чтобы было удобно вызывать где нужно
+
+    buttonRedacts = document.querySelectorAll(".redact");
+    // for ( берем Элемент из итерируемого объекта) {тело цикла}
+    for (const buttonRedact of buttonRedacts) {
+      buttonRedact.addEventListener("click", () => {
+        // с пом-ю св-ва dataset получаем доступ к data-атрибуту redact (который указали в рендер-html форме, в кнопке редактирования) 
+        const index = buttonRedact.dataset.redact;
+
+        if (buttonRedacts[index].innerHTML === "Редактировать") {
+          buttonRedacts[index].innerHTML = "Сохранить";
+          icomments[index].txtRedact = false;
+          const commentBodyElements = document.querySelectorAll(".comment-text");
+          const commentBodyElement = commentBodyElements[index];
+          const textareaElement = `<textarea type="textarea" class="redactor-txt" rows="4">${icomments[index].text}</textarea>`;
+          commentBodyElement.innerHTML = textareaElement;
+        } else {
+          icomments[index].txtRedact = true;
+          const redactCommentElement = document.querySelectorAll(".redactor-txt");
+          icomments[index].text = protectHtmlString(redactCommentElement[0].value);
+          renderIcomments();
+        }
+      });
+    }
+    return buttonEditText;
+  }
+
+  function protectHtmlString(someEdit) {
+    someEdit = someEdit
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+    return someEdit;
+  }
+
+  function delay(interval = 300) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, interval);
+      });
+}
+
+  const giveMeTime = 'ru-RU';
+  let todayData = { day: 'numeric', month: 'numeric', year: '2-digit' };
+  let todayTime = { hour: 'numeric', minute: '2-digit' };
+  let date = new Date();
+
+
+  buttonElement.addEventListener('click', () => {  // Добавляем обработчик события "клик" на элемент buttonElement.
+    //console.log(textInputElement.value);
+
+    nameInputElement.classList.remove("error"); // Убирает у элемента класс error
+    textInputElement.classList.remove("error")
+    if (nameInputElement.value === "" || textInputElement.value === "") { // если значения полей имени или текста будут пустыми, применится класс error.(красный цвет полей)
+      nameInputElement.classList.add("error"); textInputElement.classList.add("error");
+      return;
+    }
+    const oldListHtml = newBox.innerHTML; // читаем из newBox все содержимое // Для того чтобы посмотреть или изменить содержимое эл-та исп-ся св-во innerHTML (например console.log(element.innerHTML))
+
+    //   newBox.innerHTML = oldListHtml + // тут мы обновляем содержимое эл-та  // Далее приклеиваем к содержимому эл-та в данном случае html код.
+
+    // icomments.push({  
+    //   author: protectHtmlString(nameInputElement.value),
+    //   text: protectHtmlString(textInputElement.value),
+    //   date: `${date.toLocaleString(giveMeTime, todayData)} ${date.toLocaleString(giveMeTime, todayTime)}`,
+    //   likes: 0,
+    //   paint: '',
+    //   txtRedact: true,
+    //   isLiked: false,
+    // });
+
+    buttonElement.disabled = true;
+    buttonElement.textContent = 'Комментарий отправляется';
+
+    fetch('https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments', {
+      method: "POST",
+      body: JSON.stringify({ // в body запроса мы передали json строку с обьектом, которую требует api
+        name: protectHtmlString(nameInputElement.value),
+        text: protectHtmlString(textInputElement.value),
+      }),
+    })
+    .then((response) => { // в ф-ии then, в обработчике, мы ответ преобразовали в json строку
+      return response.json();
+    })
+      .then((responseData) => { // и из преобразованной json строки достаем актуальный список задач 
+        fetch(
+    'https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments', {
+      method: "GET",
+    });
+  })
+  getAllComments()
+  .then((response) => { 
+        return response.json();
+  })
+  .then((responseData) => {
+    console.log(responseData);
+    icomments = responseData.comments;
+    buttonElement.disabled = false;
+    buttonElement.textContent = "Отправить комментарий";
+    renderIcomments();
+  });
+      
+        // и перерендерели список
+          
+        
+     
+
+
+
+
+
+
+
+    const deleteComments = document.querySelectorAll(".delete-button");
+    for (const deleteComment of deleteComments) {
+      deleteComment.addEventListener("click", (event) => {
+        event.stopPropagation();
+        // -----
+if  (event.target === deleteCardButton) {
+    // delete card
+} else if (event.target === editCardButton) {
+    // edit card
+} else {
+    // reply to comment
+}
+        //----- далее код для удаления с сервера
+        // const id = deleteComment.dataset.id;
+
+        // fetch('https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments/' + id, { // в конец адреса api приклеиваем id задачи
+        //   method: "DELETE"
+        // }).then((response) => { // в ф-ии then, в обработчике, мы ответ преобразовали в json строку
+        //   response.json().then((responseData) => { // и из преобразованной json строки достаем актуальный список задач 
+        //     console.log(responseData);
+
+        //     icomments = responseData.comments; // этот актуальный список задач положили в icomments
+        //     renderIcomments(); // и перерендерели список
+
+        //   });
+        // })
+      });
+    }
+
+
+
+    // const fetchPromise = fetch(
+    //     'https://webdev-hw-api.vercel.app/api/v1/:alexandr-butylev/comments',
+    //     {
+    //       method: "POST",
+    //       body: JSON.stringify({
+    //         name: protectHtmlString(nameInputElement.value),
+    //         text: protectHtmlString(textInputElement.value),
+    //       }),
+    //     });
+    // console.log(fetchPromise);
+
+    // fetchPromise.then((response) => {
+    //   const jsonPromise = response.json();
+    //   jsonPromise.then((responseData) => {
+    //     console.log(responseData);
+
+    //      icomments = responseData.comments;
+    //      renderIcomments();
+    //   });
+    // });
+    renderIcomments();
+
+  });
+
+
+</script>
+
 </html>

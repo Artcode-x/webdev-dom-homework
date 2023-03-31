@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Проект "Комменты"</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 
 <body>
@@ -80,6 +80,49 @@
     },
   ];
 
+  function answerOnComments() {  // Функция ответа на комментарии
+    const answerComments = document.querySelectorAll(".comment");
+
+    for (const answerComment of answerComments) {
+      answerComment.addEventListener("click", (event) => {
+        event.stopPropagation();
+         const commentTextElement = answerComment.querySelector('.comment-text');
+         const commentText = commentTextElement.dataset.comments
+         const authorTextElement = answerComment.querySelector('#quote__name');
+          const author = authorTextElement.innerHTML
+          console.log(commentText, author);
+
+            textInputElement.value = `>` + " " + author + " " + commentText;
+            return answerOnComments();
+            renderIcomments();
+    });
+    }
+    }
+
+    function likesButton() {
+        
+        const likeButtonElements = document.querySelectorAll(".like-button");
+    
+        for (const likeButtonElement of likeButtonElements) {
+          // for (Элемент of итерируемый обьект) { тело цикла for of }       
+          likeButtonElement.addEventListener("click", () => {
+           const index = likeButtonElement.dataset.index;
+            // с помощью св-ва dataset можно получить доступ к data-атрибутам с пом-ю js (у эл-та dom дерева)
+    
+             if (icomments[index].isLiked === false) {
+               icomments[index].paint = "-active-like";
+               icomments[index].likes += 1;
+               icomments[index].isLiked = true;
+             } else {
+               icomments[index].paint = '';
+               icomments[index].likes -= 1;
+               icomments[index].isLiked = false;
+             }
+            renderIcomments()
+          });
+        }
+      };
+
   const renderIcomments = () => { // тут будем рендерить комменты
     const icommentsHTML = icomments.map((icomment, index) => {
       return ` <li class="comment">
@@ -109,73 +152,10 @@
     // };
 
     buttonEditText();
-
-    
-    
-    
-    // Тут были сложности , Функция ответа на комментарии
-    const answerComments = document.querySelectorAll(".comment");
-
-    for (const answerComment of answerComments) {
-      answerComment.addEventListener("click", (event) => {
-        event.stopPropagation();
-         const commentTextElement = answerComment.querySelector('.comment-text');
-         const commentText = commentTextElement.dataset.comments
-          const authorTextElement = answerComment.querySelector('#quote__name');
-          const xauthor = authorTextElement.innerHTML
-          console.log(commentText, xauthor);
-
-       //const zindex = answerComment.dataset.comments;
-        
-      
-      
-        //  возникла путанница
-        // if (!icomments[zindex].txtRedact) return;
-        // const answerName = icomments[zindex].author;
-        // const ansComment = icomments[zindex].text;
-
-      //  textInputElement.value = `>` + " " + answerName + ansComment;
-      textInputElement.value = `>` + " " + author + commentText;
-
-        renderIcomments();
-      });
-    }
-
-  //    delay(2000).then(() => {
-  //    comment.likes = comment.isLiked
-  //      ? comment.likes - 1
-  //      : comment.likes + 1;
-  //    comment.isLiked = !comment.isLiked;
-  //    comment.isLikeLoading = false;
-  //    renderComments();
-  //  });
-
-    const likeButtonElements = document.querySelectorAll(".like-button");
-
-    for (const likeButtonElement of likeButtonElements) {
-      
-      // for (Элемент of итерируемый обьект) { тело цикла for of }       
-      likeButtonElement.addEventListener("click", () => {
-        const index = likeButtonElement.dataset.index;
-        
-        // с помощью св-ва dataset можно получить доступ к data-атрибутам с пом-ю js (у эл-та dom дерева)
-        if (icomments[index].isLiked === false) {
-          icomments[index].paint = "-active-like";
-          icomments[index].likes += 1;
-          icomments[index].isLiked = true;
-        } else {
-          icomments[index].paint = '';
-          icomments[index].likes -= 1;
-          icomments[index].isLiked = false;
-        }
-      
-        renderIcomments()
-     
-      });
-    }
-  };
-
-  renderIcomments();
+    answerOnComments();
+    likesButton();
+}
+  //renderIcomments();
 
 
   function buttonEditText(buttonRedacts) { // обернул в ф-ию чтобы было удобно вызывать где нужно
@@ -297,20 +277,28 @@
     for (const deleteComment of deleteComments) {
       deleteComment.addEventListener("click", (event) => {
         event.stopPropagation();
+        // -----
+if  (event.target === deleteCardButton) {
+    // delete card
+} else if (event.target === editCardButton) {
+    // edit card
+} else {
+    // reply to comment
+}
+        //----- далее код для удаления с сервера
+        // const id = deleteComment.dataset.id;
 
-        const id = deleteComment.dataset.id;
+        // fetch('https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments/' + id, { // в конец адреса api приклеиваем id задачи
+        //   method: "DELETE"
+        // }).then((response) => { // в ф-ии then, в обработчике, мы ответ преобразовали в json строку
+        //   response.json().then((responseData) => { // и из преобразованной json строки достаем актуальный список задач 
+        //     console.log(responseData);
 
-        fetch('https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments/' + id, { // в конец адреса api приклеиваем id задачи
-          method: "DELETE"
-        }).then((response) => { // в ф-ии then, в обработчике, мы ответ преобразовали в json строку
-          response.json().then((responseData) => { // и из преобразованной json строки достаем актуальный список задач 
-            console.log(responseData);
+        //     icomments = responseData.comments; // этот актуальный список задач положили в icomments
+        //     renderIcomments(); // и перерендерели список
 
-            icomments = responseData.comments; // этот актуальный список задач положили в icomments
-            renderIcomments(); // и перерендерели список
-
-          });
-        })
+        //   });
+        // })
       });
     }
 

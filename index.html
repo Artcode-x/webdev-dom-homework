@@ -82,7 +82,7 @@
 
   function answerOnComments() {  // Функция ответа на комментарии
     const answerComments = document.querySelectorAll(".comment");
-
+  
     for (const answerComment of answerComments) {
       answerComment.addEventListener("click", (event) => {
         event.stopPropagation();
@@ -92,23 +92,35 @@
           const author = authorTextElement.innerHTML
           console.log(commentText, author);
 
-            textInputElement.value = `>` + " " + author + " " + commentText;
+            textInputElement.value = `>` + " " + author + ` ` + commentText;
             return answerOnComments();
             renderIcomments();
     });
-    }
-    }
-
+    };
+    };
+  
     function likesButton() {
         
+     
+    // comment.likes = comment.isLiked
+    //   ? comment.likes - 1
+    //   : comment.likes + 1;
+    // comment.isLiked = !comment.isLiked;
+    // comment.isLikeLoading = false;
+    // renderComments();
+  
+
         const likeButtonElements = document.querySelectorAll(".like-button");
     
+        
         for (const likeButtonElement of likeButtonElements) {
           // for (Элемент of итерируемый обьект) { тело цикла for of }       
           likeButtonElement.addEventListener("click", () => {
            const index = likeButtonElement.dataset.index;
             // с помощью св-ва dataset можно получить доступ к data-атрибутам с пом-ю js (у эл-та dom дерева)
     
+            delay(2000).then(() => {
+
              if (icomments[index].isLiked === false) {
                icomments[index].paint = "-active-like";
                icomments[index].likes += 1;
@@ -119,6 +131,9 @@
                icomments[index].isLiked = false;
              }
             renderIcomments()
+
+          }); // с функиции delay
+
           });
         }
       };
@@ -140,7 +155,7 @@
           <button data-id="${icomment.id}" class="delete-button">Удалить</button>
           <div class="likes">
             <span class="likes-counter">${icomment.likes}</span>
-            <button data-index="${index}" class="${icomment.isLiked ? 'like-button -active-like' : 'like-button'}"></button>
+            <button data-index="${index}" class="${icomment.isLiked ? 'like-button -active-like' : 'like-button'}"></button> 
             
             </div>
         </div>
@@ -155,7 +170,7 @@
     answerOnComments();
     likesButton();
 }
-  //renderIcomments();
+  // renderIcomments();
 
 
   function buttonEditText(buttonRedacts) { // обернул в ф-ию чтобы было удобно вызывать где нужно

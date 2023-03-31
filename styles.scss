@@ -2,6 +2,25 @@
     background-color: #DF6C6C;
 }
 
+@keyframes rotating {
+    from {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(30deg);;
+    }
+    75% {
+      transform: rotate(-30deg);;
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+
+  .-loading-like {
+    animation: rotating 2s linear infinite;
+  }
+
 .delete-button {
     font-size: 24px;
     padding: 10px 25px;

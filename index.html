@@ -10,7 +10,7 @@
     <ul class="comments" id="box">
       <!-- код отсюда теперь в массиве js-->
     </ul>
-    <div class="add-form">
+    <div id="send-form" class="add-form">
       <input type="text" id="name-input" value="Alex D" class="add-form-name" placeholder="Введите ваше имя" />
       <textarea type="textarea" id="text-input" value="test-text" class="add-form-text"
         placeholder="Введите ваш коментарий" rows="4"></textarea>
@@ -26,9 +26,12 @@
   const nameInputElement = document.getElementById('name-input'); // +
   const textInputElement = document.getElementById('text-input'); // +
   const newBox = document.getElementById('box'); // +
+  const genForm = document.getElementById('send-form');
   const quoteNameElement = document.getElementById("quote__name")
   // function getAllcommentsFromServer(getAllComments) {
   // }
+  newBox.disabled = true;
+  newBox.textContent = 'Данные с сервера в процессе получения';
   const getAllComments = () => fetch(
     'https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments',
     {
@@ -41,6 +44,7 @@
     .then((responseData) => {
     // console.log(responseData);  
       icomments = responseData.comments;
+      newBox.disabled = false;
       renderIcomments();
     });
   
@@ -100,16 +104,16 @@
             renderIcomments()
    //---
 
-} else if (event.target.classList.contains('delete-button')) {
-    console.log('delete item logic')
-} else if (event.target.classList.contains('redact')) {
-    console.log('edit item logic')
-}
+// } else if (event.target.classList.contains('delete-button')) {
+//     console.log('delete item logic')
+// } else if (event.target.classList.contains('redact')) {
+//     console.log('edit item logic')
+// }
 
    
-    };//);
+    });
     };
-   // };
+    };
   
   
     function likesButton() {
@@ -217,6 +221,7 @@
   let todayData = { day: 'numeric', month: 'numeric', year: '2-digit' };
   let todayTime = { hour: 'numeric', minute: '2-digit' };
   let date = new Date();
+
   buttonElement.addEventListener('click', () => {  // Добавляем обработчик события "клик" на элемент buttonElement.
     //console.log(textInputElement.value);
     nameInputElement.classList.remove("error"); // Убирает у элемента класс error
@@ -237,7 +242,9 @@
     //   isLiked: false,
     // });
     buttonElement.disabled = true;
-    buttonElement.textContent = 'Комментарий отправляется';
+   buttonElement.textContent = 'Комментарий отправляется';
+   // genForm.disabled = true;
+   //   genForm.textContent = 'Комментарий отправляется...';
     fetch('https://webdev-hw-api.vercel.app/api/v1/:alexandr-b/comments', {
       method: "POST",
       body: JSON.stringify({ // в body запроса мы передали json строку с обьектом, которую требует api
@@ -263,6 +270,8 @@
     icomments = responseData.comments;
     buttonElement.disabled = false;
     buttonElement.textContent = "Отправить комментарий";
+  //  genForm.textContent.disabled = false;
+ // как написать тут?   genForm.textContent = ;
     renderIcomments();
   });
       

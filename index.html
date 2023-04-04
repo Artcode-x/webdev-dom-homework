@@ -290,19 +290,20 @@
 
     //рендер-функция
 
+//  
+
     const renderIcomments = () => {
 
         //  elementOfdata - 1 комментарий, elementOfdata.name - часть одного комментария 
         const icommentsHTML = icomments.map((elementOfdata, index) => {
             return `
-      //  <li  data-text = '&gt ${elementOfdata.name} \n ${elementOfdata.text}'
-      //   class="comment">
+            <li data-text = '&gt ${elementOfdata.name} \n ${elementOfdata.text}' class="comment">
         <div class="comment-header">
           <div id="quote__name">${elementOfdata.name}</div>
           <div>${elementOfdata.date}</div>
         </div>
         <div class="comment-body">
-          <div class ="comment-text" data-text>${elementOfdata.text} </div>
+          <div class="comment-text" data-text>${elementOfdata.text} </div>
           </div>
           <div class="comment-footer">
           <button data-redact="${index}" class="redact">Редактировать</button>

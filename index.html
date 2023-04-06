@@ -143,20 +143,60 @@
             }),
         })
             .then((response) => { // в ф-ии then, в обработчике, мы ответ преобразовали в json строку
+              console.log(response);
+
+              if(response.status === 201) {
+                console.log('Сообщение успешно отправлено');
+                return response.json();
+                
+              } else {
+              // Код который обработает ошибку
+              //  throw new Error("Сервер упал");
+              return Promise.reject("Сервер упал");   
+              }
+
+              // if (response.status === 400) {
+              // } else {
+              // }
+            
                 mainForm.style.display = "none"; // скрыть (display:none)
                 loaderPostElement.style.display = "flex"; // отобразить (display:flex;)
                 return response.json();
             })
             .then(() => {
+
+                nameInputElement.value = "";
+                textInputElement.value = ""; 
                 return getAllComments(); // тут лежит GET запрос комментов
+
+                // переносим сюда инпуты чтобы информация в них сохранялась после обновления страницы
+               
+
+                
             })
             .then(() => {
                 loaderPostElement.style.display = "none"; // когда отрисовались комменты, мы должны скрыть надпись 'комментарии добавляются'
                 mainForm.style.display = "flex";
+
+            //    throw new Error("Some error");
+            }).catch((error) => {
+              alert("Запрос не был отправлен, попробуйте позже"); // в случае если пропадет интернет, будем выдавать эту ошибку
+              console.warn(error); // обязательно нужно указать для вывода сообщения об ошибке (Some error) в следующем промисе
             });
+            // .then ((data) => {
+            //   console.log(data);
+            // })
+            // ф-ия catch привязывается только к цепочке выше. Если после catch будут какие - либо then, то ошибки внутри их уже не будет
+            // Соответственно после catch можно продолжать цепочку промисов
+            // .then ((data) => {
+            //   return "Я волна, новая волна"
+             
+            // }).then ((data) => {
+            //   console.log(data);
+            // });
         renderIcomments();
-        nameInputElement.value = "";
-        textInputElement.value = "";
+               // nameInputElement.value = "";
+               //  textInputElement.value = ""; 
     });
 
 

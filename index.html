@@ -1,12 +1,9 @@
-<!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <title>Проект "Комменты"</title>
     <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
     <div class="container">
         <p id="loader-start"></p>
@@ -70,23 +67,16 @@
     // Делаем невидимым сообщение "комментарии добавляются" 
     // если закомментить - постоянно будет отображаться
     loaderPostElement.style.display = "none";
-
-
     // Оживляем кнопку лайков
-
-
     function likesButton() {
         const likeButtonElements = document.querySelectorAll(".like-button");
-
         for (const likeButtonElement of likeButtonElements) {
             // for (Элемент of итерируемый обьект) { тело цикла for of }       
             likeButtonElement.addEventListener("click", (event) => {
                 event.stopPropagation();
                 const index = likeButtonElement.dataset.index;
                 // с помощью св-ва dataset можно получить доступ к data-атрибутам с пом-ю js (у эл-та dom дерева)
-
                 // delay(2000).then(() => { // лайки с задержкой
-
                 //  if (icomments[index].isLiked === false) {
                 //    icomments[index].paint = "-active-like";
                 //    icomments[index].counter += 1;
@@ -96,7 +86,6 @@
                 //    icomments[index].counter -= 1;
                 //    icomments[index].isLiked = false;
                 //  }
-
                 if (icomments[index].isLiked === false) {
                     icomments[index].isLiked = true;
                     icomments[index].counter += 1;
@@ -112,7 +101,6 @@
     };
 
     //Сначала проверка на пустой ввод - если да, окрасит в красный
-
     buttonElement.addEventListener('click', () => {  // Добавляем обработчик события "клик" на элемент buttonElement.
         //console.log(textInputElement.value);
         nameInputElement.classList.remove("error"); // Убирает у элемента класс error
@@ -121,13 +109,9 @@
             nameInputElement.classList.add("error"); textInputElement.classList.add("error");
             return;
         }
-
-
         // Что тут создается? Что значит options?
         const xdate = new Date().toLocaleString("ru-RU", options);
-
         // Затем идет добавление комментария на сервер
-
         // buttonElement.disabled = true;
         // buttonElement.textContent = 'Комментарий отправляется';
         // genForm.disabled = true;
@@ -143,22 +127,18 @@
             }),
         })
             .then((response) => { // в ф-ии then, в обработчике, мы ответ преобразовали в json строку
-              console.log(response);
+         //     console.log(response);
 
-              if(response.status === 201) {
-                console.log('Сообщение успешно отправлено');
-                return response.json();
-                
-              } else {
-              // Код который обработает ошибку
-              //  throw new Error("Сервер упал");
-              return Promise.reject("Сервер упал");   
+             if (response.status === 400) {
+                throw new Error("Имя и комментарий должны быть не короче 3 символов"); 
+              }
+               if (response.status === 500) {
+                throw new Error("Сервер упал");
+              //  throw new Error("Кажется у вас сломался интернет - попробуйте позже"); 
               }
 
-              // if (response.status === 400) {
-              // } else {
-              // }
-            
+              
+                console.log('Сообщение успешно отправлено');
                 mainForm.style.display = "none"; // скрыть (display:none)
                 loaderPostElement.style.display = "flex"; // отобразить (display:flex;)
                 return response.json();
@@ -170,9 +150,9 @@
                 return getAllComments(); // тут лежит GET запрос комментов
 
                 // переносим сюда инпуты чтобы информация в них сохранялась после обновления страницы
-               
 
-                
+
+
             })
             .then(() => {
                 loaderPostElement.style.display = "none"; // когда отрисовались комменты, мы должны скрыть надпись 'комментарии добавляются'
@@ -180,9 +160,39 @@
 
             //    throw new Error("Some error");
             }).catch((error) => {
-              alert("Запрос не был отправлен, попробуйте позже"); // в случае если пропадет интернет, будем выдавать эту ошибку
-              console.warn(error); // обязательно нужно указать для вывода сообщения об ошибке (Some error) в следующем промисе
+                console.log(error.message);
+
+                switch (error.message) {
+                    case "Имя и комментарий должны быть не короче 3 символов":
+                        alert("Имя и комментарий должны быть не короче 3 символов");
+                        break; // закрывает switch
+                    case "Сервер упал":
+                        alert("Сервер упал");
+                        break;
+                    default: 
+                    alert("Кажется у вас сломался интернет - попробуйте позже");
+                   //если switch не нашел подходящее сообщение, то могу добавить тут условие
+                        break;
+                }
+
+               // renderIcomments();
+        // nameInputElement.value = "";
+        // textInputElement.value = "";
+
+                return console.warn(error); 
             });
+                // if (error === "Имя и комментарий должны быть не короче 3 символов") {
+                //     alert(error)
+                // } if (error === "Сервер упал") {
+                //     alert(error)
+                // } {
+                //     alert("Кажется у вас сломался интернет - попробуйте позже");
+                // }
+             // alert("Запрос не был отправлен, попробуйте позже"); // в случае если пропадет интернет, будем выдавать эту ошибку
+           
+             // обязательно нужно указать для вывода сообщения об ошибке (Some error) в следующем промисе
+            //  console.log(error);
+            
             // .then ((data) => {
             //   console.log(data);
             // })
@@ -190,18 +200,17 @@
             // Соответственно после catch можно продолжать цепочку промисов
             // .then ((data) => {
             //   return "Я волна, новая волна"
-             
+
             // }).then ((data) => {
             //   console.log(data);
             // });
-        renderIcomments();
+        
                // nameInputElement.value = "";
                //  textInputElement.value = ""; 
     });
 
 
     // блокировка кнопки - она блокируется когда пустые поля
-
     const goodInput = () => {
       // Если поле ввода имени пустое или текста 
       if (nameInputElement.value === "" || textInputElement.value === "") {
@@ -219,11 +228,9 @@
         });
       });
   }
-
     // ввод по кнопке enter
     // ф-ия чтобы можно было отправлять по нажатию ENTER
-
-    mainForm.addEventListener('keydown', (e) => { //  keydown - нажатие по клавше
+    mainForm.addEventListener('keydown', (e) => { //  keydown - нажатие по клавше
         // keyup - отпускание клавиши
         if (!e.shiftKey && e.key === 'Enter') {// если шифт и ентер нажать вместе - 
             // e.key - если нажимаем ентер - отправить коммент
@@ -233,17 +240,12 @@
             textInputElement.value = '';
         }
     });
-
     //  buttonElement.disabled = false;
     //  buttonElement.textContent = "Отправить комментарий";
     //  genForm.textContent.disabled = false;
     //  как написать тут?   genForm.textContent = ;
-
-
-
     // для ререндера icomments на получаемые данные с сервера поменяли const на let
     let icomments = [];// данные о комментариях хранятся тут   
-
     const options = {
         year: "2-digit",
         month: "numeric",
@@ -252,9 +254,7 @@
         hour: "numeric",
         minute: "2-digit",
     };
-
     // Функция ответа на комментарии
-
     function answerOnComments() {  // Функция ответа на комментарии
         const answerComments = document.querySelectorAll(".comment");
         const textInputElement = document.getElementById("text-input");
@@ -265,10 +265,7 @@
             });
         }
     }
-
-
     // Функция редактирования 
-
     function buttonEditText(buttonRedacts) { // обернул в ф-ию чтобы было удобно вызывать где нужно
         buttonRedacts = document.querySelectorAll(".redact");
         // for ( берем Элемент из итерируемого объекта) {тело цикла}
@@ -293,7 +290,6 @@
         }
         return buttonEditText;
     }
-
     // Функция защиты для полей ввода
     function protectHtmlString(someEdit) {
         someEdit = someEdit
@@ -303,7 +299,6 @@
             .replaceAll('"', "&quot;");
         return someEdit;
     }
-
     // функция задержки для лайков
     function delay(interval = 300) {
         return new Promise((resolve) => {
@@ -316,24 +311,12 @@
     let todayData = { day: 'numeric', month: 'numeric', year: '2-digit' };
     let todayTime = { hour: 'numeric', minute: '2-digit' };
     let date = new Date();
-
-
-
-
-
-
-
-
     // начало реализации кнопки удаления положено :)
     const deleteComments = document.querySelectorAll(".delete-button");
 
-
     //рендер-функция
-
  
-
     const renderIcomments = () => {
-
         //  elementOfdata - 1 комментарий, elementOfdata.name - часть одного комментария 
         const icommentsHTML = icomments.map((elementOfdata, index) => {
             return `
@@ -363,12 +346,8 @@
         buttonEditText();
         answerOnComments();
         likesButton();
-
-
     };
     getAllComments();
     buttonBlock();
-
 </script>
-
 </html>
